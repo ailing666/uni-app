@@ -1,6 +1,7 @@
 <template>
 	<view>
-		<mySearchBar></mySearchBar>
+		<mySearchBar :keyword="keyword"></mySearchBar>
+		<!-- <input type="text" > -->
 	</view>
 </template>
 
@@ -10,8 +11,16 @@
 		components: {
 			mySearchBar
 		},
+		data() {
+			return {
+				keyword: ''
+			}
+		},
 		onLoad(options) {
-			console.log(options);
+			this.keyword = options.cat_name
+		},
+		mounted() {
+			console.log(this.keyword);
 		}
 	}
 </script>
