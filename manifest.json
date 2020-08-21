@@ -1,6 +1,6 @@
 {
     "name" : "uni-shopping",
-    "appid" : "__UNI__CC36BE6",
+    "appid" : "__UNI__F7A0E2C",
     "description" : "",
     "versionName" : "1.0.0",
     "versionCode" : "100",
@@ -57,7 +57,7 @@
     "quickapp" : {},
     /* 小程序特有相关 */
     "mp-weixin" : {
-        "appid" : "",
+        "appid" : "wx785bde620b7718cb",
         "setting" : {
             "urlCheck" : false
         },
@@ -72,7 +72,7 @@
     "mp-toutiao" : {
         "usingComponents" : true
     },
-    "uniStatistics": {  
-        "enable": false
+    "uniStatistics" : {
+        "enable" : false
     }
 }
