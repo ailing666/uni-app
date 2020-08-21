@@ -9,22 +9,22 @@
 					<text>{{cate1.cat_name}}</text>
 				</view>
 			</view>
-			<view class="details">
-				<image src="../../static/images/titleImage.png"> </image>
+			<scroll-view class="details" scroll-y :scroll-top="scrollTop" @scroll="scroll">
+				<image class="details-img" src="../../static/images/titleImage.png"> </image>
 				<view class="details-list">
 					<!-- 二级列表 -->
 					<view class="cate2" v-show="cate2.children" v-for="(cate2,index2) in categoryList[activeIndex].children" :key="cate2.cat_id">
-						<view class="cate2-title">/<text >{{cate2.cat_name}}</text>/</view>
+						<view class="cate2-title">/<text>{{cate2.cat_name}}</text>/</view>
 						<!-- 三级列表 -->
 						<view class="cate3">
-							<view  v-for="(cate3,index3) in cate2.children" :key="cate3.cat_id">
+							<view v-for="(cate3,index3) in cate2.children" :key="cate3.cat_id" @click="toSearchDetails(cate3.cat_name)">
 								<image :src="cate3.cat_icon"></image>
 								<text>{{cate3.cat_name}}</text>
 							</view>
 						</view>
 					</view>
 				</view>
-			</view>
+			</scroll-view>
 		</view>
 	</view>
 </template>
@@ -41,28 +41,43 @@
 				// 当前点击的索引
 				activeIndex: 0,
 				// 分类列表
-				categoryList: []
+				categoryList: [],
+				scrollTop: 0,
+				old: {
+					scrollTop: 0
+				}
 			}
 		},
 		onLoad() {
 			this.getCategoryList()
 		},
 		methods: {
+			scroll(e) {
+				this.old.scrollTop = e.detail.scrollTop
+			},
 			// 设置索引
 			setIndex(index) {
-				this.activeIndex = index
+				this.activeIndex = index;
+				this.scrollTop = this.old.scrollTop
+				this.$nextTick(function() {
+					this.scrollTop = 0
+				})
+			},
+			toSearchDetails(val) {
+				uni.navigateTo({
+					url: '/pages/searchDetails/searchDetails?name=' + val
+				})
 			},
 			async getCategoryList() {
 				this.categoryList = await this.$request({
 					url: '/api/public/v1/categories'
 				})
-
 			}
 		}
 	}
 </script>
 
-<style lang="less" >
+<style lang="less">
 	.category {
 		.content {
 			display: flex;
@@ -106,7 +121,8 @@
 			.details {
 				flex: 1;
 				overflow: scroll;
-				>image {
+
+				.details-img {
 					width: 520rpx;
 					height: 180rpx;
 					margin: 20rpx 16rpx;
@@ -115,34 +131,35 @@
 				.details-list {
 					.cate2 {
 						text-align: center;
-						
 
-	.cate2-title {
-height: 110rpx;
-line-height: 110rpx;
-color: #e0e0e0;
-		text{
-		color: #333;
-			
-		margin: 0 30rpx;
-		}
-	}
+						.cate2-title {
+							height: 110rpx;
+							line-height: 110rpx;
+							color: #e0e0e0;
+
+							text {
+								color: #333;
+								margin: 0 30rpx;
+							}
+						}
 					}
 
 					.cate3 {
 						display: flex;
 						flex-wrap: wrap;
-					view{
-						display: flex;
-						flex-direction: column;
-						align-items: center;
-						width: 33.33%;
-						color: #333;
-						>image {
-							width: 120rpx;
-							height: 120rpx;
+
+						view {
+							display: flex;
+							flex-direction: column;
+							align-items: center;
+							width: 33.33%;
+							color: #333;
+
+							>image {
+								width: 120rpx;
+								height: 120rpx;
+							}
 						}
-					}
 					}
 				}
 			}
