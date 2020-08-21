@@ -1,52 +1,51 @@
 <template>
-	<div class="home">
-		<!-- 搜索框 -->
-		<view class="search-link">
-			<view class="inner">
-				<icon type="search" size="16"></icon>
-				<text>搜索</text>
-			</view>
-		</view>
+	<view class="home">
+		<mySearchLink></mySearchLink>
 		<!-- 轮播图 -->
-		<swiper indicator-dots autoplay :interval="3000" :duration="1000">
-			<swiper-item v-for="item in swiperList" :key="item.goods_id">
-				<image :src="item.image_src" mode=""></image>
+		<swiper indicator-dots autoplay indicator-color="rgbs(255,255,255,.5)" indicator-active-color="#fff" :interval="3000"
+		 :duration="1000">
+			<swiper-item v-for="item in swiperList" :key="goods_id">
+				<image :src="item.image_src"></image>
 			</swiper-item>
 		</swiper>
-		<!-- 导航栏 -->
-		<view class="nav">
-			<image v-for="(item,index) in catitemsList" :key="index" :src="item.image_src"></image>
-		</view>
-		<!-- 楼层 -->
-		<view class="floor">
-			<view class="floor-item" v-for="(item,index) in floorList" :key="index">
-				<image class="floor-title" :src="item.floor_title.image_src"></image>
-				<view class="floor-list">
-						<image :src="item.product_list[0].image_src" mode=""></image>
-					<view class="right">
-						<block  v-for="(item2,index2) in item.product_list" :key="index2">
-						<image v-show="index2" :src="item2.image_src" mode=""></image>
-						</block>
-					</view>
-				</view>
+		<!-- 子导航 -->
+		<view class="sub-nav">
+			<view class="nav-list" v-for="(item,index) in subNavList" :key="index">
+				<image :src="item.image_src"></image>
 			</view>
 		</view>
-		
-	</div>
+		<view class="floor" v-for="(item,index) in floorList" :key="index">
+			<!-- 楼层列表 -->
+			<view class="f-title">
+				<image :src="item.floor_title.image_src"></image>
+			</view>
+			<view class="f-content" v-for="(item,index) in item.product_list" :key="index">
+				<image :src="item.image_src"></image>
+			</view>
+		</view>
+	</view>
 </template>
 
 <script>
+	import mySearchLink from '../../components/mySearchLink.vue'
 	export default {
+		components: {
+			mySearchLink
+		},
 		data() {
 			return {
+				// 轮播图列表
 				swiperList: [],
-				catitemsList: [],
+				// 子导航列表
+				subNavList: [],
+				// 楼层列表
 				floorList: []
 			}
 		},
 		onLoad() {
+			// 页面加载后调用数据
 			this.getSwiperList()
-			this.getCatitemsList()
+			this.getsubNavList()
 			this.getFloorList()
 		},
 		methods: {
@@ -55,8 +54,8 @@
 					url: '/api/public/v1/home/swiperdata'
 				})
 			},
-			async getCatitemsList() {
-				this.catitemsList = await this.$request({
+			async getsubNavList() {
+				this.subNavList = await this.$request({
 					url: '/api/public/v1/home/catitems'
 				})
 			},
@@ -69,85 +68,76 @@
 	}
 </script>
 
+
 <style lang="less">
 	.home {
 
-		// 搜索框
-		.search-link {
-			height: 100rpx;
-			padding: 20rpx 16rpx 0 16rpx;
-			box-sizing: border-box;
-			background-color: #ff2d4a;
-
-			.inner {
-				display: flex;
-				align-items: center;
-				justify-content: center;
-				background-color: #fff;
-				height: 60rpx;
-				border-radius: 8rpx;
-				text-align: center;
-
-				icon {
-					margin: 16rpx;
-				}
-			}
-		}
-
-		// 轮播图
+		/* 轮播图 */
 		swiper {
+			width: 100vw;
 			height: 340rpx;
 
 			swiper-item {
 				image {
-					width: 100vw;
-					height: 100%;
+					width: 100%;
+					height: 340rpx;
 				}
 			}
 		}
 
-		// 导航栏
-		.nav {
-			height: 190rpx;
-			width: 100vw;
+		/* 子导航 */
+		.sub-nav {
 			display: flex;
 			align-items: center;
-			justify-content: space-around;
+			height: 194rpx;
 
-			image {
-				width: 20%;
-				height: 150rpx;
+			.nav-list {
+				width: 25%;
+				text-align: center;
+
+				image {
+					width: 128rpx;
+					height: 140rpx;
+				}
 			}
 		}
 
-		// 楼层
+		float: left;
+
 		.floor {
-			.floor-item {
-				>image {
+			overflow: hidden;
+
+			.f-title {
+				margin: 10rpx 0;
+
+				image {
 					width: 100vw;
 					height: 88rpx;
 				}
+			}
 
-				.floor-list {
-					display: flex;
+			.f-content {
+				float: left;
 
-						>image {
-							width: 232rpx;
-							height: 386rpx;
-						}
+				image {
+					width: 232rpx;
+					height: 386rpx;
+					margin-right: 10rpx;
+				}
 
-					.right {
-						height: 386rpx;
-						flex: 1;
-						display: flex;
-						flex-wrap: wrap;
+				&:nth-child(n+3) {
+					width: 232rpx;
+					height: 188rpx;
+					margin-right: 10rpx;
 
-						>image {
-							width: 232rpx;
-							height: 188rpx;
-							margin:  0 0 10rpx 10rpx;
-						}
+					image {
+						width: 100%;
+						height: 100%;
 					}
+				}
+
+				&:nth-last-child(-n+2) {
+					margin-top: 10rpx;
 				}
 			}
 		}
