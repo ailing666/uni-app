@@ -9,7 +9,8 @@
 					<text>{{cate1.cat_name}}</text>
 				</view>
 			</view>
-			<scroll-view class="details" scroll-y :scroll-top="scrollTop" @scroll="scroll">
+			<!-- 可以单独滚动的容器 垂直方向 顶部滚动绑定scrollTop -->
+			<scroll-view class="details" scroll-y :scroll-top="scrollTop">
 				<image class="details-img" src="../../static/images/titleImage.png"> </image>
 				<view class="details-list">
 					<!-- 二级列表 -->
@@ -43,23 +44,18 @@
 				// 分类列表
 				categoryList: [],
 				scrollTop: 0,
-				old: {
-					scrollTop: 0
-				}
 			}
 		},
 		onLoad() {
 			this.getCategoryList()
 		},
 		methods: {
-			scroll(e) {
-				this.old.scrollTop = e.detail.scrollTop
-			},
 			// 设置索引
 			setIndex(index) {
 				this.activeIndex = index;
-				this.scrollTop = this.old.scrollTop
-				this.$nextTick(function() {
+				// 先将scrollTop改变(值小防止页面抖动),再异步修改为0
+				this.scrollTop = 0.01
+				this.$nextTick(()=> {
 					this.scrollTop = 0
 				})
 			},

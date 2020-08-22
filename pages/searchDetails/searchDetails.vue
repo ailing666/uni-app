@@ -3,6 +3,9 @@
 		<!-- 搜索框 -->
 		<mySearchBar :keyword="keyword"></mySearchBar>
 		<!-- 过滤栏 -->
+		<view class="">
+			
+		</view>
 		<!-- 列表项 -->
 		<view class="details-list"  v-for="item in goodsList.goods" :key="item.goods_id">
 				<view class="list-left">
@@ -26,6 +29,8 @@
 			return {
 				// 搜索关键词
 				keyword: '',
+				// 过滤栏
+				filterList:['综合','销量','价格'],
 				// 返回商品列表
 				goodsList: [],
 				// 返回的详情列表
@@ -52,7 +57,6 @@
 		}
 	}
 </script>
-
 <style lang="less">
 .searchDetails{
 	.details-list{

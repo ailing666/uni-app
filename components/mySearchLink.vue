@@ -1,6 +1,6 @@
 <template>
 	<!-- 搜索区域 -->
-	<view class="header" >
+	<view class="header">
 		<view class="search">
 			<icon type="search" size="20" />
 			<text>搜索</text>

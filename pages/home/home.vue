@@ -4,7 +4,7 @@
 		<!-- 轮播图 -->
 		<swiper indicator-dots autoplay indicator-color="rgbs(255,255,255,.5)" indicator-active-color="#fff" :interval="3000"
 		 :duration="1000">
-			<swiper-item v-for="item in swiperList" :key="goods_id">
+			<swiper-item v-for="item in swiperList" :key="item.goods_id">
 				<image :src="item.image_src"></image>
 			</swiper-item>
 		</swiper>
