@@ -1,15 +1,20 @@
 const BASE_URL = 'https://www.uinav.com'
+/**
+ * url:请求地址
+ * data:请求对象 object
+ * */
 export function request({
-	url
+	url,
+	data
 }) {
 	return new Promise((resolve, reject) => {
 		uni.showLoading({
 				title: '拼命加载中。。。',
 				mask: true
 			}),
-
 			uni.request({
 				url: BASE_URL + url,
+				data,
 				success: res => {
 					let {
 						message,

@@ -29,6 +29,7 @@
 <script>
 	import mySearchLink from '../../components/mySearchLink.vue'
 	export default {
+		name:'home',
 		components: {
 			mySearchLink
 		},

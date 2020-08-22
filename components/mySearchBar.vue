@@ -22,9 +22,6 @@
 		  keyword (newValue) {
 		    this.val = newValue
 		  }
-		},
-		onLoad(){
-			this.val = this.keyword
 		}
 	}
 </script>
@@ -35,11 +32,11 @@
 	overflow: hidden;
 	background-color: #eeeeee;
 	height: 100rpx;
-	text-indent: 100rpx;
 	input{
 		height: 60rpx;
 		width: 718rpx;
 		margin: 20rpx auto;
+	padding-left: 100rpx;
 		border-radius: 8rpx;
 		background-color: #fff;
 	}
