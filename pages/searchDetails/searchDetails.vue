@@ -5,13 +5,13 @@
 		<!-- 过滤栏 -->
 		<!-- 列表项 -->
 		<view class="details-list"  v-for="item in goodsList.goods" :key="item.goods_id">
-			<view class="list-left" v-show="item.goods_big_logo">
-				<image :src="item.goods_big_logo" mode=""></image>
-			</view>
-			<view class="list-right">
-				<text>{{item.goods_name}}</text>
-				<text>￥{{goods_price}}</text>
-			</view>
+				<view class="list-left">
+					<image :src="item.goods_big_logo||'https://upload.cc/i1/2020/08/22/H8aYoQ.png'"></image>
+				</view>
+				<view class="list-right">
+					<text class="goods_name">{{item.goods_name}}</text>
+					<text class="goods_price">{{item.goods_price}}</text>
+				</view>
 		</view>
 	</view>
 </template>
@@ -56,6 +56,10 @@
 <style lang="less">
 .searchDetails{
 	.details-list{
+		display: flex;
+		padding: 30rpx ;
+		box-sizing: border-box;
+		border-top: 1px solid #eee;
 		.list-left{
 			>image{
 				width: 200rpx;
@@ -63,7 +67,27 @@
 			}
 		}
 		.list-right{
-			
+			flex: 1;
+			display: flex;
+			flex-direction: column;
+			padding-left: 30rpx;
+			justify-content: space-around;
+			.goods_name{
+				overflow : hidden;
+				text-overflow: ellipsis;
+				display: -webkit-box;
+				-webkit-line-clamp: 2;
+				-webkit-box-orient: vertical;
+			}
+			.goods_price{
+				color: #ff3350;
+				font-size: 40rpx;
+				&::before{
+					content: '$';
+					font-size: 30rpx;
+					margin: 5rpx;
+				}
+			}
 		}
 	}
 }
