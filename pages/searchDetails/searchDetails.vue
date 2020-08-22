@@ -6,9 +6,9 @@
 		<view class="filter-menu">
 			<view class="fm-item" v-for="(item,index) in filterList" :key="index" :class="{active:currentIndex===index}">
 				<text @click="setIndex(index)">{{item}}</text>
-				<text class="arrow" :class="{active:isSort}">
-					<text class="a-top"></text>
-					<text class="a-buttom"></text>
+				<text class="arrow">
+					<text class="a-top" :class="{active:isSort==='rise'}"></text>
+					<text class="a-buttom" :class="{active:isSort==='dec'}"></text>
 				</text>
 			</view>
 		</view>
@@ -40,7 +40,7 @@
 				pageNum: 1,
 				pageSize: 5,
 				// 排序
-				isSort: true,
+				isSort: undefined,
 				// 过滤栏
 				filterList: ['综合', '销量', '价格'],
 				// 返回商品列表
@@ -55,9 +55,13 @@
 				this.search
 			},
 			setIndex(index) {
+				console.log('点了');
 				this.currentIndex = index
-				this.isSort = !this.isSort
-				console.log(this.isSort);
+				if (this.isSort === undefined) {
+					this.isSort = 'rise'
+				} else {
+					this.isSort = this.isSort === 'rise' ? 'dec' : 'rise'
+				}
 			},
 			search() {
 				this.pageNum = 1
@@ -73,8 +77,15 @@
 						pagesize: this.pageSize
 					},
 				})
-				// 请求结束后主动关闭下拉动画
 				uni.stopPullDownRefresh()
+				console.log('res.goods', ...res.goods);
+
+				function sortData(a, b) {
+					return b.goods_price - a.goods_price
+				}
+				res.goods.sort(sortData);
+				// 请求结束后主动关闭下拉动画
+				console.log('res.goods', ...res.goods);
 				// 使用展开运算符将后面的数据追加到初始数据后
 				this.goodsList = [...this.goodsList, ...res.goods]
 			},
@@ -124,25 +135,22 @@
 							border: 10rpx solid transparent;
 						}
 
-						&.active {
-							.a-top {
-								border-top-color: #666666;
-							}
-
-							.a-buttom {
-								border-bottom-color: #cdcdcd;
-							}
-						}
-
 						.a-top {
 							top: 24rpx;
 							border-top: 14rpx solid #cdcdcd;
 
+							&.active {
+								border-top-color: #666666;
+							}
 						}
 
 						.a-buttom {
 							top: -6rpx;
-							border-bottom: 14rpx solid #666666;
+							border-bottom: 14rpx solid #cdcdcd;
+
+							&.active {
+								border-bottom-color: #666666;
+							}
 						}
 					}
 				}
