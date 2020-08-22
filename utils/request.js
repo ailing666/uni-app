@@ -9,7 +9,7 @@ export function request({
 }) {
 	return new Promise((resolve, reject) => {
 		uni.showLoading({
-				title: '拼命加载中。。。',
+				title: '拼命加载中..',
 				mask: true
 			}),
 			uni.request({

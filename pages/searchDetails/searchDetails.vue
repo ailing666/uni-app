@@ -5,8 +5,12 @@
 		<!-- 过滤栏 -->
 		<view class="filter-menu">
 			<view class="fm-item" v-for="(item,index) in filterList" :key="index" :class="{active:currentIndex===index}">
-				<text @click="currentIndex = index">{{item}}</text>
-			</view vF>
+				<text @click="setIndex(index)">{{item}}</text>
+				<text class="arrow" :class="{active:isSort}">
+					<text class="a-top"></text>
+					<text class="a-buttom"></text>
+				</text>
+			</view>
 		</view>
 		<!-- 列表项 -->
 		<view class="details-list" v-for="item in goodsList" :key="item.goods_id">
@@ -35,6 +39,8 @@
 				keyword: '',
 				pageNum: 1,
 				pageSize: 5,
+				// 排序
+				isSort: true,
 				// 过滤栏
 				filterList: ['综合', '销量', '价格'],
 				// 返回商品列表
@@ -43,32 +49,34 @@
 				detailsList: []
 			}
 		},
-			watch:{
-				keyword(newVal){
-					console.log('newVal'+newVal);
-					this.pageNum = 1
-					this.goodsList=[]
-				}
-			},
 		methods: {
 			confirm(val) {
 				this.keyword = val
-				console.log('this.keyword', this.keyword);
-				this.getGoodsList()
-				console.log('val', val);
+				this.search
 			},
-
+			setIndex(index) {
+				this.currentIndex = index
+				this.isSort = !this.isSort
+				console.log(this.isSort);
+			},
+			search() {
+				this.pageNum = 1
+				this.goodsList = []
+				this.getGoodsList()
+			},
 			async getGoodsList() {
 				let res = await this.$request({
 					url: '/api/public/v1/goods/search',
 					data: {
 						query: this.keyword,
-						pagenum: this.pageNum, 
+						pagenum: this.pageNum,
 						pagesize: this.pageSize
 					},
 				})
+				// 请求结束后主动关闭下拉动画
+				uni.stopPullDownRefresh()
+				// 使用展开运算符将后面的数据追加到初始数据后
 				this.goodsList = [...this.goodsList, ...res.goods]
-				console.log(this.goodsList);
 			},
 			async getDetailsList() {
 				this.detailsList = await this.$request({
@@ -79,19 +87,13 @@
 		onLoad(options) {
 			// 获取关键词
 			this.keyword = options.cat_name,
-
-				this.getGoodsList()
-			this.getDetailsList()
-		},
-		onPullDownRefresh() {
-			console.log('下拉刷新');
-			this.pageNum=1
-			this.goodsList = []
+				this.getDetailsList()
 			this.getGoodsList()
 		},
+		onPullDownRefresh() {
+			this.search()
+		},
 		onReachBottom() {
-			console.log('上拉加载');
-			// 请求下一页数据
 			this.pageNum++;
 			this.getGoodsList();
 		},
@@ -108,6 +110,41 @@
 			.fm-item {
 				&.active {
 					color: #ff3350;
+				}
+
+				&:nth-child(3) {
+					.arrow {
+						position: relative;
+
+						text {
+							position: absolute;
+							width: 0;
+							height: 0;
+							right: -26rpx;
+							border: 10rpx solid transparent;
+						}
+
+						&.active {
+							.a-top {
+								border-top-color: #666666;
+							}
+
+							.a-buttom {
+								border-bottom-color: #cdcdcd;
+							}
+						}
+
+						.a-top {
+							top: 24rpx;
+							border-top: 14rpx solid #cdcdcd;
+
+						}
+
+						.a-buttom {
+							top: -6rpx;
+							border-bottom: 14rpx solid #666666;
+						}
+					}
 				}
 			}
 		}
