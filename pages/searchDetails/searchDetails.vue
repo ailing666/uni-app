@@ -7,8 +7,9 @@
 			<view class="fm-item" v-for="(item,index) in filterList" :key="index" :class="{active:currentIndex===index}">
 				<text @click="setIndex(index)">{{item}}</text>
 				<text class="arrow">
-					<text class="a-top" :class="{active:isSort==='rise'}"></text>
-					<text class="a-buttom" :class="{active:isSort==='dec'}"></text>
+					{{isSort}}
+					<text class="a-top" :class="{active:isSort==='dec'}"></text>
+					<text class="a-buttom" :class="{active:isSort==='rise'}"></text>
 				</text>
 			</view>
 		</view>
@@ -41,6 +42,7 @@
 				pageSize: 5,
 				// 排序
 				isSort: undefined,
+				old: 'rise',
 				// 过滤栏
 				filterList: ['综合', '销量', '价格'],
 				// 返回商品列表
@@ -55,13 +57,24 @@
 				this.search
 			},
 			setIndex(index) {
-				console.log('点了');
 				this.currentIndex = index
-				if (this.isSort === undefined) {
-					this.isSort = 'rise'
+				if (index === 2) {
+					if (this.isSort === undefined) {
+						console.log('this.old1', this.old);
+						this.isSort = this.old === 'rise' ? 'dec' : 'rise'
+						this.old = this.isSort
+					} else {
+						// 取反
+						this.isSort = this.isSort === 'rise' ? 'dec' : 'rise'
+						this.old = this.isSort
+						console.log('this.old2', this.old);
+					}
 				} else {
-					this.isSort = this.isSort === 'rise' ? 'dec' : 'rise'
+					// 点的不是价格就重置为undefined
+					this.isSort = undefined
 				}
+				this.search()
+				console.log('isSort', this.isSort);
 			},
 			search() {
 				this.pageNum = 1
@@ -78,14 +91,21 @@
 					},
 				})
 				uni.stopPullDownRefresh()
-				console.log('res.goods', ...res.goods);
 
 				function sortData(a, b) {
 					return b.goods_price - a.goods_price
 				}
-				res.goods.sort(sortData);
+				let list = []
+				if (this.isSort === 'rise') {
+					list = res.goods.sort(sortData);
+				} else if (this.isSort === 'dec') {
+					list = res.goods.sort(sortData).reverse()
+				} else {
+					list = res.goods
+				}
+				console.log('list', this.isSort, ...list);
 				// 请求结束后主动关闭下拉动画
-				console.log('res.goods', ...res.goods);
+				// console.log('res.goods', ...res.goods);
 				// 使用展开运算符将后面的数据追加到初始数据后
 				this.goodsList = [...this.goodsList, ...res.goods]
 			},
