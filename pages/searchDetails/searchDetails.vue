@@ -7,7 +7,6 @@
 			<view class="fm-item" v-for="(item,index) in filterList" :key="index" :class="{active:currentIndex===index}">
 				<text @click="setIndex(index)">{{item}}</text>
 				<text class="arrow">
-					{{isSort}}
 					<text class="a-top" :class="{active:isSort==='dec'}"></text>
 					<text class="a-buttom" :class="{active:isSort==='rise'}"></text>
 				</text>
@@ -60,14 +59,12 @@
 				this.currentIndex = index
 				if (index === 2) {
 					if (this.isSort === undefined) {
-						console.log('this.old1', this.old);
 						this.isSort = this.old === 'rise' ? 'dec' : 'rise'
 						this.old = this.isSort
 					} else {
 						// 取反
 						this.isSort = this.isSort === 'rise' ? 'dec' : 'rise'
 						this.old = this.isSort
-						console.log('this.old2', this.old);
 					}
 				} else {
 					// 点的不是价格就重置为undefined
@@ -90,24 +87,31 @@
 						pagesize: this.pageSize
 					},
 				})
+				console.log('请求的初始',...res.goods);
+				// 请求完成手动关闭下拉动画
 				uni.stopPullDownRefresh()
-
+// 定义排序函数
 				function sortData(a, b) {
 					return b.goods_price - a.goods_price
 				}
+				// 用于储存排序后的数组
 				let list = []
 				if (this.isSort === 'rise') {
-					list = res.goods.sort(sortData);
+					console.log('升序');
+					// 升序
+					list = this.goodsList.sort(sortData);
 				} else if (this.isSort === 'dec') {
-					list = res.goods.sort(sortData).reverse()
+					console.log('降序');
+					// 降序
+					list = this.goodsList.sort(sortData).reverse()
 				} else {
-					list = res.goods
+					console.log('buguan');
+					// 不管
+					list = this.goodsList
 				}
-				console.log('list', this.isSort, ...list);
-				// 请求结束后主动关闭下拉动画
-				// console.log('res.goods', ...res.goods);
-				// 使用展开运算符将后面的数据追加到初始数据后
+				console.log('排序后',...list);
 				this.goodsList = [...this.goodsList, ...res.goods]
+				console.log('this.goodsList',this.goodsList);
 			},
 			async getDetailsList() {
 				this.detailsList = await this.$request({
@@ -121,9 +125,11 @@
 				this.getDetailsList()
 			this.getGoodsList()
 		},
+		// 下拉
 		onPullDownRefresh() {
 			this.search()
 		},
+		// 上拉
 		onReachBottom() {
 			this.pageNum++;
 			this.getGoodsList();
