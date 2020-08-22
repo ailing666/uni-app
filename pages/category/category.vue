@@ -13,7 +13,7 @@
 			<scroll-view class="details" scroll-y :scroll-top="scrollTop">
 				<image class="details-img" src="../../static/images/titleImage.png"> </image>
 				<view class="details-list">
-					<!-- 二级列表 -->
+					<!-- 二级列表  根据activeIndex渲染对应的二级列表 -->
 					<view class="cate2" v-show="cate2.children" v-for="(cate2,index2) in categoryList[activeIndex].children" :key="cate2.cat_id">
 						<view class="cate2-title">/<text>{{cate2.cat_name}}</text>/</view>
 						<!-- 三级列表 -->
@@ -59,11 +59,13 @@
 					this.scrollTop = 0
 				})
 			},
+			// 跳转到搜索详情页
 			toSearchDetails(val) {
 				uni.navigateTo({
 					url: '/pages/searchDetails/searchDetails?cat_name=' + val
 				})
 			},
+			// 接口获取分类列表
 			async getCategoryList() {
 				this.categoryList = await this.$request({
 					url: '/api/public/v1/categories'

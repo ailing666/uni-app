@@ -1,7 +1,7 @@
 <template>
 	<!-- 搜索区域 -->
 	<view class="header">
-		<view class="search">
+		<view class="search-link">
 			<icon type="search" size="20" />
 			<text>搜索</text>
 		</view>
@@ -10,7 +10,7 @@
 
 <script>
 	export default {
-
+		name: 'search-link'
 	}
 </script>
 
@@ -19,7 +19,7 @@
 		padding: 20rpx 16rpx;
 		background-color: #eb4450;
 
-		.search {
+		.search-link {
 			display: flex;
 			align-items: center;
 			justify-content: center;
