@@ -1,4 +1,4 @@
-const BASE_URL = 'https://www.uinav.com'
+const BASE_URL = 'https://api-ugo-dev.itheima.net'
 /**
  * url:请求地址
  * data:请求对象 object

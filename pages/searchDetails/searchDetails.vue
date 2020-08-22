@@ -11,7 +11,7 @@
 		<!-- 列表项 -->
 		<view class="details-list" v-for="item in goodsList" :key="item.goods_id">
 			<view class="list-left">
-				<image :src="item.goods_big_logo||'https://upload.cc/i1/2020/08/22/H8aYoQ.png'"></image>
+				<image :src="item.goods_small_logo||'https://upload.cc/i1/2020/08/22/H8aYoQ.png'"></image>
 			</view>
 			<view class="list-right">
 				<text class="goods_name">{{item.goods_name}}</text>
@@ -43,7 +43,13 @@
 				detailsList: []
 			}
 		},
-
+			watch:{
+				keyword(newVal){
+					console.log('newVal'+newVal);
+					this.pageNum = 1
+					this.goodsList=[]
+				}
+			},
 		methods: {
 			confirm(val) {
 				this.keyword = val
@@ -51,16 +57,17 @@
 				this.getGoodsList()
 				console.log('val', val);
 			},
+
 			async getGoodsList() {
-				let data = await this.$request({
+				let res = await this.$request({
 					url: '/api/public/v1/goods/search',
 					data: {
 						query: this.keyword,
-						pagenum: this.pageNum,
+						pagenum: this.pageNum, 
 						pagesize: this.pageSize
 					},
 				})
-				this.goodsList = [...this.goodsList, ...data.goods]
+				this.goodsList = [...this.goodsList, ...res.goods]
 				console.log(this.goodsList);
 			},
 			async getDetailsList() {
@@ -78,6 +85,7 @@
 		},
 		onPullDownRefresh() {
 			console.log('下拉刷新');
+			this.pageNum=1
 			this.goodsList = []
 			this.getGoodsList()
 		},
@@ -86,7 +94,6 @@
 			// 请求下一页数据
 			this.pageNum++;
 			this.getGoodsList();
-
 		},
 	}
 </script>

@@ -20,6 +20,7 @@
 		},
 		methods:{
 			confirm(){
+				console.log('this.val',this.val);
 				this.$emit('confirm',this.val)
 			}
 		},
