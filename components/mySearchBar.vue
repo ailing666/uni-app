@@ -3,6 +3,7 @@
 		<!-- type:默认text  val:双向绑定的输入框值 @confirm:确认事件-->
 		<input type="text" confirm-type="search" :maxlength="15" v-model="val" @confirm="confirm">
 		<icon class="search-icon" type="search" size="16"></icon>
+		<view v-if="val" @click="cancelVal" class="cancel">取消</view>
 	</view>
 </template>
 
@@ -23,6 +24,10 @@
 			confirm() {
 				// 触发父组件的confim方法,参数为this.val
 				this.$emit('confirm', this.val)
+				console.log(this.val);
+			},
+			cancelVal(){
+				this.val = ''
 			}
 		},
 		watch: {
@@ -36,15 +41,15 @@
 
 <style lang="less" scoped>
 	.search-bar {
-		position: relative;
-		overflow: hidden;
+		display: flex;
+		align-items: center;
 		background-color: #eeeeee;
 		height: 100rpx;
-		padding: 0 20rpx;
+		padding: 20rpx;
 
 		input {
+			flex: 1;
 			height: 60rpx;
-			margin: 20rpx auto;
 			padding-left: 80rpx;
 			border-radius: 8rpx;
 			background-color: #fff;
@@ -52,8 +57,18 @@
 
 		.search-icon {
 			position: absolute;
-			top: 34rpx;
+			top: 54rpx;
 			left: 40rpx;
+		}
+
+		.cancel {
+			height: 60rpx;
+			width: 160rpx;
+			margin-left: 20rpx;
+			line-height: 60rpx;
+			text-align: center;
+			border: 1px solid #bfbfbf;
+			border-radius: 8rpx;
 		}
 	}
 </style>
