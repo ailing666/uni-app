@@ -13,7 +13,7 @@
 			<view class="g-info">
 				<text class="g-name">{{goodsDetailsList.goods_name}}</text>
 				<view class="star">
-					<icon type="clear"></icon>
+					<text class="iconfont icon-icon-test13"></text>
 					<text>收藏</text>
 				</view>
 			</view>
@@ -25,18 +25,19 @@
 		<!-- 卡片 -->
 		<view class="g-card">
 			<view class="promotion">
-				
+				<myList lable="促销" value="满300减30元" valueColor="#eb4450"></myList>
 			</view>
 			<view class="choose">
-			</view> 
+				<myList lable="已选" value="黑色/s/1件"></myList>
+			</view>
 		</view>
 		<!-- 地址 -->
 		<view class="address">
-
+			<myList lable="送至" value="广东省 广州市 海珠区" icon></myList>
 		</view>
 		<!-- tab栏 -->
 		<view class="tabs">
-
+			<view @click="setIndex(index)" :class="{active:activeIndex===index}" v-for="(item,index) in tabList" :key="index">{{item}}</view>
 		</view>
 		<!-- 底部 -->
 		<view class="buttom">
@@ -65,17 +66,24 @@
 		},
 		data() {
 			return {
-				goodsDetailsList: []
+				tabList: ['图文介绍', '规格参数'],
+				goodsDetailsList: [],
+				activeIndex:0
 			}
 		},
 		onLoad(options) {
 			this.getGoodsDetails(options.goodsId)
 		},
 		methods: {
+			// 获取商品详情
 			async getGoodsDetails(id) {
 				this.goodsDetailsList = await this.$request({
 					url: '/api/public/v1/goods/detail?goods_id=' + id
 				})
+			},
+			// 设置点击索引
+			setIndex(index){
+				this.activeIndex = index
 			}
 		}
 	}
@@ -90,7 +98,7 @@
 
 			swiper {
 				height: 722rpx;
-
+				margin-bottom: 20rpx;
 
 				swiper-item {
 					image {
@@ -105,6 +113,7 @@
 			}
 
 			.g-info {
+				margin: 20rpx 0;
 				height: 90rpx;
 				display: flex;
 
@@ -121,9 +130,13 @@
 					display: flex;
 					flex-direction: column;
 					align-items: center;
+					border-left: 1px solid #eee;
 					width: 148rpx;
 					margin-left: 70rpx;
-
+					color: #9b9a9b;
+					.iconfont{
+						font-size: 40rpx;
+					}
 					text {
 						margin-top: 8rpx;
 					}
@@ -132,6 +145,7 @@
 
 			.express {
 				color: #a5a5a5;
+				margin-bottom: 20rpx;
 			}
 		}
 
@@ -144,9 +158,31 @@
 			.choose {}
 		}
 
-		.address {}
+		.address {
+			margin: 20rpx 0;
+			background-color: #fff;
+		}
 
-		.tabs {}
+		.tabs {
+			display: flex;
+			justify-content: space-around;
+			align-items: center;
+			height: 100rpx;
+			background-color: #fff;
+			text-align: center;
+			view{
+				width: 50%;
+				height: 96rpx;
+				line-height: 96rpx;
+			}
+			.active{
+				&::after{
+					content: '';
+					display: block;
+					border-bottom: 8rpx solid #EB4450;
+				}
+			}
+		}
 
 		.buttom {
 			.kefu {}
