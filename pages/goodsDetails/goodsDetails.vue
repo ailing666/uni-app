@@ -3,8 +3,8 @@
 		<!-- 商品信息 -->
 		<view class="g-info">
 			<!-- 轮播图 -->
-			<swiper indicator-dots :interval="3000" :duration="1000">
-				<swiper-item v-for="(item,index) in goodsDetailsList.pics" :key="index">
+			<swiper indicator-dots :interval="3000" :duration="1000" circular indicator-active-color="#fff" indicator-color="rgba(255,255,255,.5)">
+				<swiper-item @click="toPreview(index)" v-for="(item,index) in goodsDetailsList.pics" :key="index">
 					<image :src="item.pics_big" mode="heightFix"></image>
 				</swiper-item>
 			</swiper>
@@ -100,6 +100,15 @@
 			// 设置点击索引
 			setIndex(index) {
 				this.activeIndex = index
+			},
+			// 点击预览图片
+			toPreview(index) {
+				// 将商品详情中的图片地址存到urls中
+				let urls = this.goodsDetailsList.pics.map(item => item.pics_big)
+				uni.previewImage({
+					current: index,//索引
+					urls//地址数组
+				});
 			}
 		}
 	}
