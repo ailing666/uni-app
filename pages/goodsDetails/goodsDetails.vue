@@ -39,6 +39,18 @@
 		<view class="tabs">
 			<view @click="setIndex(index)" :class="{active:activeIndex===index}" v-for="(item,index) in tabList" :key="index">{{item}}</view>
 		</view>
+		<view class="content">
+			<!-- 图文 -->
+			<view v-show="!activeIndex" v-html="goodsDetailsList.goods_introduce"></view>
+			<!-- 规格 -->
+			<view class="attrs-table" v-for="(item,idnex) in goodsDetailsList.attrs" :key="index">
+				<!-- <text>{{item.attr_name}}--{{item.attr_vals}}</text> -->
+				<view class="my-tr">
+					<view class="my-td">{{item.attr_name}}</view>
+					<view class="my-td">{{item.attr_vals}}</view>
+				</view>
+			</view>
+		</view>
 		<!-- 底部 -->
 		<view class="buttom">
 			<view class="kefu">
@@ -68,7 +80,7 @@
 			return {
 				tabList: ['图文介绍', '规格参数'],
 				goodsDetailsList: [],
-				activeIndex:0
+				activeIndex: 0
 			}
 		},
 		onLoad(options) {
@@ -82,7 +94,7 @@
 				})
 			},
 			// 设置点击索引
-			setIndex(index){
+			setIndex(index) {
 				this.activeIndex = index
 			}
 		}
@@ -134,9 +146,11 @@
 					width: 148rpx;
 					margin-left: 70rpx;
 					color: #9b9a9b;
-					.iconfont{
+
+					.iconfont {
 						font-size: 40rpx;
 					}
+
 					text {
 						margin-top: 8rpx;
 					}
@@ -168,18 +182,49 @@
 			justify-content: space-around;
 			align-items: center;
 			height: 100rpx;
+			margin-bottom: 10rpx;
 			background-color: #fff;
 			text-align: center;
-			view{
+
+			view {
 				width: 50%;
 				height: 96rpx;
 				line-height: 96rpx;
 			}
-			.active{
-				&::after{
+
+			.active {
+				&::after {
 					content: '';
 					display: block;
 					border-bottom: 8rpx solid #EB4450;
+				}
+			}
+		}
+
+		.content {
+			padding: 10rpx;
+			background-color: #fff;
+
+			.attrs-table {
+				margin-bottom: -3rpx;
+
+				.my-tr {
+					display: flex;
+				}
+
+				.my-td {
+					flex: 1;
+					height: 88rpx;
+					line-height: 88rpx;
+					text-align: center;
+					width: 334rpx;
+					border: 1px solid #cdcdcd;
+
+					&:last-child {
+						text-align: left;
+						text-indent: 50rpx;
+						margin-left: -1rpx;
+					}
 				}
 			}
 		}
