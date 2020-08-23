@@ -11,7 +11,6 @@
 		}
 	}
 </script>
-
 <style lang="less">
-
+		@import "/fonts/iconfont.css";
 </style>
