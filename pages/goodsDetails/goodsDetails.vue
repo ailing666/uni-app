@@ -60,9 +60,9 @@
 			</view>
 			<view class="shopcart">
 				<text class="iconfont icon-icon-test3"></text>
-				<text>购物车</text>
+				<text @click="toCart">购物车</text>
 			</view>
-			<view class="add-cart">
+			<view class="add-cart" @click="addCart(goodsDetailsList.goods_id)">
 				加入购物车
 			</view>
 			<view class="buy">
@@ -99,6 +99,16 @@
 				this.goodsDetailsList = await this.$request({
 					url: '/api/public/v1/goods/detail?goods_id=' + id
 				})
+			},
+			// 加入购物车
+			addCart(id) {
+				this.$store.commit('addCart',id)
+			},
+			// 去购物车
+			toCart() {
+				uni.switchTab({
+					url: '/pages/shopCart/shopCart'
+				});
 			},
 			// 设置点击索引
 			setIndex(index) {
@@ -274,12 +284,13 @@
 			background-color: #fff;
 			z-index: 999;
 
-			.kefu{
-				button{
+			.kefu {
+				button {
 					position: absolute;
 					opacity: 0;
 				}
 			}
+
 			.kefu,
 			.shopcart {
 				flex: 2;

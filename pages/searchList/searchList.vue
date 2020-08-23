@@ -127,8 +127,9 @@
 			},
 			// 搜索事件
 			search(item) {
-				this.type=''
-				item && (this.keyword = item )
+				this.type = ''
+				// 如果有item说明是点击搜索历史进来的,就讲关键词替换为item
+				item && (this.keyword = item)
 				// 页码置1,列表清空,调接口
 				this.pageNum = 1
 				this.goodsList = []
