@@ -12,9 +12,10 @@
 			<text class="g-price">${{goodsDetailsList.goods_price}}</text>
 			<view class="g-info">
 				<text class="g-name">{{goodsDetailsList.goods_name}}</text>
-				<view class="star">
-					<text class="iconfont icon-icon-test13"></text>
-					<text>收藏</text>
+				<view class="share">
+					<text @click="isStar=!isStar" class="iconfont" :class="{'icon-icon-test14':isStar,'icon-icon-test13':!isStar}"></text>
+					<!-- 只有按钮能触发分享弹框 -->
+					<button hover-class='none' open-type="share">分享</button>
 				</view>
 			</view>
 			<view class="express">
@@ -79,6 +80,7 @@
 		},
 		data() {
 			return {
+				isStar: false,
 				// tab栏列表
 				tabList: ['图文介绍', '规格参数'],
 				// 商品详情列表
@@ -106,10 +108,17 @@
 				// 将商品详情中的图片地址存到urls中
 				let urls = this.goodsDetailsList.pics.map(item => item.pics_big)
 				uni.previewImage({
-					current: index,//索引
-					urls//地址数组
+					current: index, //索引
+					urls //地址数组
 				});
-			}
+			},
+			// 自定义分享弹窗
+			onShareAppMessage() {
+				return {
+					title: this.goodsDetailsList.goods_name,
+					desc: '芝麻开门'
+				};
+			},
 		}
 	}
 </script>
@@ -152,7 +161,7 @@
 					-webkit-box-orient: vertical;
 				}
 
-				.star {
+				.share {
 					display: flex;
 					flex-direction: column;
 					align-items: center;
@@ -160,6 +169,16 @@
 					width: 148rpx;
 					margin-left: 70rpx;
 					color: #9b9a9b;
+
+					button {
+						background-color: #fff;
+						font-size: 26rpx;
+						line-height: 1.5;
+
+						&::after {
+							border: none;
+						}
+					}
 
 					.iconfont {
 						font-size: 40rpx;
@@ -196,7 +215,6 @@
 			justify-content: space-around;
 			align-items: center;
 			height: 100rpx;
-			margin-bottom: 10rpx;
 			background-color: #fff;
 			text-align: center;
 
