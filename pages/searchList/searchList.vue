@@ -4,7 +4,7 @@
 			<!-- 搜索框 -->
 			<mySearchBar :keyword="keyword" @confirm="confirm"></mySearchBar>
 			<!-- 过滤栏 -->
-			<view class="filter-menu">
+			<view class="filter-menu" v-if="!type">
 				<view class="fm-item" v-for="(item,index) in filterList" :key="index" :class="{active:currentIndex===index}">
 					<text @click="setIndex(index)">{{item}}</text>
 					<text class="arrow">
@@ -16,13 +16,22 @@
 			</view>
 		</view>
 		<!-- 列表项 -->
-		<view class="details-list" v-for="item in goodsList" :key="item.goods_id" @click="toGoodsDetails(item.goods_id)">
+		<view v-show="!type" class="details-list" v-for="item in goodsList" :key="item.goods_id" @click="toGoodsDetails(item.goods_id)">
 			<view class="list-left">
 				<image :src="item.goods_small_logo||'https://upload.cc/i1/2020/08/22/H8aYoQ.png'"></image>
 			</view>
 			<view class="list-right">
 				<text class="goods_name">{{item.goods_name}}</text>
 				<text class="goods_price">{{item.goods_price}}.00</text>
+			</view>
+		</view>
+		<view class="nothing" v-if="!goodsList.length && !type">
+			没有您想要的结果哦
+		</view>
+		<view v-if="type==='link'" class="search-history">
+			<view class="tools">
+				<text>历史搜索</text>
+				<text class="iconfont icon-icon-test7"></text>
 			</view>
 		</view>
 	</view>
@@ -51,12 +60,16 @@
 				filterList: ['综合', '销量', '价格'],
 				// 返回商品列表
 				goodsList: [],
-				isLastPage: false
+				// 是否是最后一页
+				isLastPage: false,
+				// 从哪里来
+				type:''
 			}
 		},
 		methods: {
 			// 将子组件传来的输入框val赋值给keyword后调用接口
 			confirm(val) {
+				this.type=''
 				this.keyword = val
 				this.search()
 			},
@@ -129,6 +142,7 @@
 		onLoad(options) {
 			// 获取关键词
 			this.keyword = options.cat_name,
+			this.type = options.type
 				this.getGoodsList()
 		},
 		// 下拉
@@ -245,6 +259,21 @@
 						font-size: 30rpx;
 						margin: 5rpx;
 					}
+				}
+			}
+		}
+		.nothing{
+			text-align: center;
+			color: red;
+		}
+		.search-history{
+			.tools{
+				display: flex;
+				justify-content: space-between;
+				padding: 20rpx;
+				text{}
+				.iconfont{
+					color: #cdcdcd;
 				}
 			}
 		}

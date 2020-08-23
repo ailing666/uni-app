@@ -24,7 +24,6 @@
 			confirm() {
 				// 触发父组件的confim方法,参数为this.val
 				this.$emit('confirm', this.val)
-				console.log(this.val);
 			},
 			cancelVal(){
 				this.val = ''
