@@ -27,6 +27,8 @@
 
 <script>
 	import mySearchBar from '../../components/mySearchBar.vue'
+	// 将页面中不需要改变的量定义为为常量
+	const PAGE_SIZE = 5
 	export default {
 		components: {
 			mySearchBar
@@ -38,7 +40,6 @@
 				// 搜索关键词
 				keyword: '',
 				pageNum: 1,
-				pageSize: 5,
 				// 排序
 				isSort: undefined,
 				old: 'rise',
@@ -47,7 +48,8 @@
 				// 返回商品列表
 				goodsList: [],
 				// 返回的详情列表
-				detailsList: []
+				detailsList: [],
+				isLastPage: false
 			}
 		},
 		methods: {
@@ -55,25 +57,28 @@
 				this.keyword = val
 				this.search
 			},
+			// 设置索引
 			setIndex(index) {
 				this.currentIndex = index
 				if (index === 2) {
 					if (this.isSort === undefined) {
+						// 这里说明是从别的索引点进来的,就根据之前的old值取反
 						this.isSort = this.old === 'rise' ? 'dec' : 'rise'
 						this.old = this.isSort
 					} else {
-						// 取反
+						// 这里说明是之前就在价格,直接取反
 						this.isSort = this.isSort === 'rise' ? 'dec' : 'rise'
 						this.old = this.isSort
 					}
 				} else {
-					// 点的不是价格就重置为undefined
+					// 这里说明点的不是价格就重置为undefined
 					this.isSort = undefined
 				}
 				this.search()
-				console.log('isSort', this.isSort);
 			},
+			// 搜索事件
 			search() {
+				// 页码置1,列表清空,调接口
 				this.pageNum = 1
 				this.goodsList = []
 				this.getGoodsList()
@@ -84,34 +89,32 @@
 					data: {
 						query: this.keyword,
 						pagenum: this.pageNum,
-						pagesize: this.pageSize
+						pagesize: PAGE_SIZE
 					},
 				})
-				console.log('请求的初始',...res.goods);
+				// console.log('请求的初始', ...res.goods);
 				// 请求完成手动关闭下拉动画
 				uni.stopPullDownRefresh()
-// 定义排序函数
+				// 定义排序函数,根据价格升序
 				function sortData(a, b) {
 					return b.goods_price - a.goods_price
 				}
-				// 用于储存排序后的数组
-				let list = []
+				/*
+				TODO: 目前只能针对获取的五条数据排序后拼接,无法做到全页面排序
+							思路:一次性获取所有数据,下拉请求是按照页码返回他排序好的几条
+				*/
 				if (this.isSort === 'rise') {
-					console.log('升序');
 					// 升序
-					list = this.goodsList.sort(sortData);
+					res.goods.sort(sortData);
 				} else if (this.isSort === 'dec') {
-					console.log('降序');
 					// 降序
-					list = this.goodsList.sort(sortData).reverse()
-				} else {
-					console.log('buguan');
-					// 不管
-					list = this.goodsList
+					res.goods.sort(sortData).reverse()
 				}
-				console.log('排序后',...list);
+				this.isLastPage = false
 				this.goodsList = [...this.goodsList, ...res.goods]
-				console.log('this.goodsList',this.goodsList);
+				// console.log('this.goodsList', ...this.goodsList);
+				// 判断最后一页
+				res.total <= this.goodsList.length &&	(this.isLastPage = true);
 			},
 			async getDetailsList() {
 				this.detailsList = await this.$request({
@@ -127,12 +130,22 @@
 		},
 		// 下拉
 		onPullDownRefresh() {
+			console.log('下拉');
 			this.search()
+			this.isLastPage=false
 		},
 		// 上拉
 		onReachBottom() {
-			this.pageNum++;
-			this.getGoodsList();
+			console.log('上拉');
+			// 如果已经是最后一页,阻止发请求
+			if (!this.isLastPage) {
+				this.pageNum++;
+				this.getGoodsList();
+			}else{
+				uni.showToast({
+					title:'没有更多了'
+				})
+			}
 		},
 	}
 </script>
