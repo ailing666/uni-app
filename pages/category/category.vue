@@ -18,7 +18,7 @@
 						<view class="cate2-title">/<text>{{cate2.cat_name}}</text>/</view>
 						<!-- 三级列表 -->
 						<view class="cate3">
-							<view v-for="(cate3,index3) in cate2.children" :key="cate3.cat_id" @click="toSearchDetails(cate3.cat_name)">
+							<view v-for="(cate3,index3) in cate2.children" :key="cate3.cat_id" @click="toSearchList(cate3.cat_name)">
 								<image :src="cate3.cat_icon"></image>
 								<text>{{cate3.cat_name}}</text>
 							</view>
@@ -60,9 +60,9 @@
 				})
 			},
 			// 跳转到搜索详情页
-			toSearchDetails(val) {
+			toSearchList(val) {
 				uni.navigateTo({
-					url: '/pages/searchDetails/searchDetails?cat_name=' + val
+					url: '/pages/searchList/searchList?cat_name=' + val
 				})
 			},
 			// 接口获取分类列表

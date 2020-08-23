@@ -56,6 +56,7 @@
 			<view class="kefu">
 				<text class="iconfont icon-kefu"></text>
 				<text>联系客服</text>
+				<button open-type="contact">联系客服</button>
 			</view>
 			<view class="shopcart">
 				<text class="iconfont icon-icon-test3"></text>
@@ -112,14 +113,15 @@
 					urls //地址数组
 				});
 			},
-			// 自定义分享弹窗
-			onShareAppMessage() {
-				return {
-					title: this.goodsDetailsList.goods_name,
-					desc: '芝麻开门'
-				};
-			},
-		}
+
+		},
+		// 自定义分享弹窗
+		onShareAppMessage() {
+			return {
+				title: this.goodsDetailsList.goods_name,
+				desc: '芝麻开门'
+			};
+		},
 	}
 </script>
 
@@ -272,6 +274,12 @@
 			background-color: #fff;
 			z-index: 999;
 
+			.kefu{
+				button{
+					position: absolute;
+					opacity: 0;
+				}
+			}
 			.kefu,
 			.shopcart {
 				flex: 2;

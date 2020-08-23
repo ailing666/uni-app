@@ -1,7 +1,7 @@
 <template>
 	<!-- 搜索区域 -->
 	<view class="header">
-		<view class="search-link">
+		<view class="search-link" @click="toSearch">
 			<icon type="search" size="20" />
 			<text>搜索</text>
 		</view>
@@ -10,7 +10,14 @@
 
 <script>
 	export default {
-		name: 'search-link'
+		name: 'search-link',
+		methods:{
+			toSearch() {
+				uni.navigateTo({
+					url: '/pages/search/search'
+				});
+			}
+		}
 	}
 </script>
 

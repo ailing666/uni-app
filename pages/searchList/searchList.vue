@@ -1,5 +1,5 @@
 <template>
-	<view class="searchDetails">
+	<view class="searchList">
 		<view class="header-stikcy">
 			<!-- 搜索框 -->
 			<mySearchBar :keyword="keyword" @confirm="confirm"></mySearchBar>
@@ -33,6 +33,7 @@
 	// 将页面中不需要改变的量定义为为常量
 	const PAGE_SIZE = 5
 	export default {
+		name:'search-list',
 		components: {
 			mySearchBar
 		},
@@ -114,7 +115,6 @@
 				}
 				this.isLastPage = false
 				this.goodsList = [...this.goodsList, ...res.goods]
-				// console.log('this.goodsList', ...this.goodsList);
 				// 判断最后一页
 				res.total <= this.goodsList.length && (this.isLastPage = true);
 			},
@@ -153,7 +153,7 @@
 	}
 </script>
 <style lang="less">
-	.searchDetails {
+	.searchList {
 		.header-stikcy {
 			// 粘性定位
 			position: sticky;
