@@ -8,6 +8,7 @@
 				<view class="fm-item" v-for="(item,index) in filterList" :key="index" :class="{active:currentIndex===index}">
 					<text @click="setIndex(index)">{{item}}</text>
 					<text class="arrow">
+						<!-- top下降,buttom上升 -->
 						<text class="a-top" :class="{active:isSort==='dec'}"></text>
 						<text class="a-buttom" :class="{active:isSort==='rise'}"></text>
 					</text>
@@ -15,13 +16,13 @@
 			</view>
 		</view>
 		<!-- 列表项 -->
-		<view class="details-list" v-for="item in goodsList" :key="item.goods_id">
+		<view class="details-list" v-for="item in goodsList" :key="item.goods_id" @click="toGoodsDetails(item.goods_id)">
 			<view class="list-left">
 				<image :src="item.goods_small_logo||'https://upload.cc/i1/2020/08/22/H8aYoQ.png'"></image>
 			</view>
 			<view class="list-right">
 				<text class="goods_name">{{item.goods_name}}</text>
-				<text class="goods_price">{{item.goods_price}}</text>
+				<text class="goods_price">{{item.goods_price}}.00</text>
 			</view>
 		</view>
 	</view>
@@ -49,8 +50,6 @@
 				filterList: ['综合', '销量', '价格'],
 				// 返回商品列表
 				goodsList: [],
-				// 返回的详情列表
-				detailsList: [],
 				isLastPage: false
 			}
 		},
@@ -119,17 +118,18 @@
 				// 判断最后一页
 				res.total <= this.goodsList.length && (this.isLastPage = true);
 			},
-			async getDetailsList() {
-				this.detailsList = await this.$request({
-					url: '/api/public/v1/goods/detail?goods_id=57396'
-				})
+			// 携带商品id跳转商品详情页
+			toGoodsDetails(id) {
+				console.log('???');
+				uni.navigateTo({
+					url:'../goodsDetails/goodsDetails?goodsId=' + id
+				});
 			}
 		},
 		onLoad(options) {
 			// 获取关键词
 			this.keyword = options.cat_name,
-				this.getDetailsList()
-			this.getGoodsList()
+				this.getGoodsList()
 		},
 		// 下拉
 		onPullDownRefresh() {

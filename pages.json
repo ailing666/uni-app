@@ -28,7 +28,13 @@
 			"style": {
 				"navigationBarTitleText": "搜索详情",
 				"enablePullDownRefresh": true,
-				"onReachBottomDistance":100
+				"onReachBottomDistance": 100
+			}
+		},
+		{
+			"path": "pages/goodsDetails/goodsDetails",
+			"style": {
+				"navigationBarTitleText": "商品详情"
 			}
 		}
 	],
