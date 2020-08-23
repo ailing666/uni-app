@@ -27,6 +27,7 @@
 			},
 			cancelVal(){
 				this.val = ''
+				this.$parent.type='link'
 			}
 		},
 		watch: {

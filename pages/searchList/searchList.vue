@@ -16,13 +16,15 @@
 			</view>
 		</view>
 		<!-- 列表项 -->
-		<view v-show="!type" class="details-list" v-for="item in goodsList" :key="item.goods_id" @click="toGoodsDetails(item.goods_id)">
-			<view class="list-left">
-				<image :src="item.goods_small_logo||'https://upload.cc/i1/2020/08/22/H8aYoQ.png'"></image>
-			</view>
-			<view class="list-right">
-				<text class="goods_name">{{item.goods_name}}</text>
-				<text class="goods_price">{{item.goods_price}}.00</text>
+		<view v-if="!type">
+			<view class="details-list" v-for="item in goodsList" :key="item.goods_id" @click="toGoodsDetails(item.goods_id)">
+				<view class="list-left">
+					<image :src="item.goods_small_logo||'https://upload.cc/i1/2020/08/22/H8aYoQ.png'"></image>
+				</view>
+				<view class="list-right">
+					<text class="goods_name">{{item.goods_name}}</text>
+					<text class="goods_price">{{item.goods_price}}.00</text>
+				</view>
 			</view>
 		</view>
 		<view class="nothing" v-if="!goodsList.length && !type">
@@ -31,7 +33,12 @@
 		<view v-if="type==='link'" class="search-history">
 			<view class="tools">
 				<text>历史搜索</text>
-				<text class="iconfont icon-icon-test7"></text>
+				<text @click="clearHistory" class="iconfont icon-icon-test7"></text>
+			</view>
+			<view class="key-item">
+				<view v-for="(item,index) in keyWordsList" :key="index" @click="search(item)">
+					{{item}}
+				</view>
 			</view>
 		</view>
 	</view>
@@ -42,7 +49,7 @@
 	// 将页面中不需要改变的量定义为为常量
 	const PAGE_SIZE = 5
 	export default {
-		name:'search-list',
+		name: 'search-list',
 		components: {
 			mySearchBar
 		},
@@ -63,15 +70,41 @@
 				// 是否是最后一页
 				isLastPage: false,
 				// 从哪里来
-				type:''
+				type: '',
+				// 历史记录数组,如果本地储存中没有就是空数组
+				keyWordsList: uni.getStorageSync('KEYWORDSLIST') || []
 			}
 		},
 		methods: {
 			// 将子组件传来的输入框val赋值给keyword后调用接口
 			confirm(val) {
-				this.type=''
+				this.type = ''
 				this.keyword = val
+				// 将关键词添加到开头
+				this.keyWordsList.unshift(this.keyword)
+				// set去重
+				this.keyWordsList = [...new Set(this.keyWordsList)]
+				// 数组长度大于最大长度就从尾部删除一个
+				this.keyWordsList.length > 6 && this.keyWordsList.pop()
+				// 将去重后关键词数组存到本地
+				uni.setStorageSync('KEYWORDSLIST', this.keyWordsList);
 				this.search()
+			},
+			// 清除搜索历史
+			clearHistory() {
+				uni.showModal({
+					title: '提示',
+					content: '你确认要清空历史搜索吗',
+					cancelText: '再想想',
+					success: res => {
+						if (res.confirm) {
+							// 清空数组
+							this.keyWordsList = []
+							// 清空本地储存
+							uni.removeStorageSync('KEYWORDSLIST')
+						}
+					}
+				});
 			},
 			// 设置索引
 			setIndex(index) {
@@ -93,7 +126,9 @@
 				this.search()
 			},
 			// 搜索事件
-			search() {
+			search(item) {
+				this.type=''
+				item && (this.keyword = item )
 				// 页码置1,列表清空,调接口
 				this.pageNum = 1
 				this.goodsList = []
@@ -135,15 +170,15 @@
 			toGoodsDetails(id) {
 				console.log('???');
 				uni.navigateTo({
-					url:'../goodsDetails/goodsDetails?goodsId=' + id
+					url: '../goodsDetails/goodsDetails?goodsId=' + id
 				});
 			}
 		},
 		onLoad(options) {
 			// 获取关键词
 			this.keyword = options.cat_name,
-			this.type = options.type
-				this.getGoodsList()
+				this.type = options.type
+			this.getGoodsList()
 		},
 		// 下拉
 		onPullDownRefresh() {
@@ -262,18 +297,35 @@
 				}
 			}
 		}
-		.nothing{
+
+		.nothing {
 			text-align: center;
 			color: red;
 		}
-		.search-history{
-			.tools{
+
+		.search-history {
+			.tools {
 				display: flex;
 				justify-content: space-between;
 				padding: 20rpx;
-				text{}
-				.iconfont{
+
+				text {}
+
+				.iconfont {
 					color: #cdcdcd;
+				}
+			}
+
+			.key-item {
+				display: flex;
+				flex-wrap: wrap;
+
+				view {
+					background-color: #dedede;
+					height: 64rpx;
+					line-height: 64rpx;
+					padding: 0 30rpx;
+					margin: 0 30rpx 16rpx 0;
 				}
 			}
 		}
