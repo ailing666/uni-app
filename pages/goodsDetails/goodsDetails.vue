@@ -13,7 +13,7 @@
 			<view class="g-info">
 				<text class="g-name">{{goodsDetailsList.goods_name}}</text>
 				<view class="share">
-					<text @click="isStar=!isStar" class="iconfont" :class="{'icon-icon-test14':isStar,'icon-icon-test13':!isStar}"></text>
+					<text @click="isStar=!isStar" class="iconfont" :class="isStar?'icon-icon-test14':'icon-icon-test13'"></text>
 					<!-- 只有按钮能触发分享弹框 -->
 					<button hover-class='none' open-type="share">分享</button>
 				</view>

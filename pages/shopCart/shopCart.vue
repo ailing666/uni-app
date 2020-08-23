@@ -4,12 +4,42 @@
 		<myList lable="收货地址" value="广东省xx省xx市xx路xx号"></myList>
 		<image class="cart-border" src="../../static/images/cart_border@2x.png" mode=""></image>
 		<view class="main">
+			<!-- 店铺 -->
 			<view class="shop">
 				<text class="iconfont icon-icon-test6"></text>
 				优购生活馆
 			</view>
-			<view class="goods">
-				<radio :value="value" :checked="index === current" />
+			<!-- 商品 -->
+			<view class="goods" v-for="item in cartGoodsList" :key="item.goods_ids">
+				<view class="left">
+					<radio @click="isChecked=!isChecked" :checked="isChecked" color="#eb4450" />
+					<image :src="item.goods_small_logo" mode=""></image>
+				</view>
+				<view class="right">
+					<text class="goods_name">{{item.goods_name}}</text>
+					<view class="buttom">
+						<text class="goods_price">$<text>{{item.goods_price}}</text>.00</text>
+						<!-- 按钮 -->
+						<view class="goods-num">
+							<button class="dec" size="mini">-</button>
+							<view>{{num}}</view>
+							<button class="add" size="mini">+</button>
+						</view>
+					</view>
+				</view>
+			</view>
+			<!-- 底部 -->
+			<view class="cart-buttom">
+				<view class="choose">
+					<radio @click="isChecked=!isChecked" :checked="isChecked" color="#eb4450" />
+					全选
+				</view>
+				<view class="sum">
+					合计
+				</view>
+				<view class="pay">
+					结算
+				</view>
 			</view>
 		</view>
 	</view>
@@ -24,16 +54,18 @@
 		},
 		data() {
 			return {
-				value:''
+				num: 1,
+				cartGoodsList: [],
+				isChecked: false
 			}
 		},
-		onLoad(options){
-			this,getCartGoodsList(options.goods_ids)
+		onLoad(options) {
+			this.getCartGoodsList(options.goods_ids)
 		},
-		methods:{
-			async getCartGoodsList(goods_ids){
+		methods: {
+			async getCartGoodsList(goods_ids) {
 				this.cartGoodsList = await this.$request({
-					url:'/api/public/v1/goods/goodslist?goods_ids='+goods_ids
+					url: '/api/public/v1/goods/goodslist?goods_ids=' + 140
 				})
 			}
 		}
@@ -42,6 +74,8 @@
 
 <style lang="less">
 	.shop-cart {
+		padding-bottom: 90rpx;
+
 		.cart-border {
 			width: 100vw;
 			height: 12rpx;
@@ -49,7 +83,100 @@
 
 		.main {
 			.shop {
-				.iconfont {}
+				height: 90rpx;
+				line-height: 90rpx;
+
+				.iconfont {
+					margin: 0 16rpx;
+				}
+			}
+
+			.goods {
+				height: 206rpx;
+				display: flex;
+				align-items: center;
+				border-bottom: 1rpx solid #eee;
+				padding: 20rpx;
+
+				.left {
+					radio {}
+
+					image {
+						width: 162rpx;
+						height: 162rpx;
+						vertical-align: middle;
+					}
+				}
+
+				.right {
+					flex: 1;
+
+					.goods_name {
+						overflow: hidden;
+						text-overflow: ellipsis;
+						display: -webkit-box;
+						-webkit-line-clamp: 2;
+						-webkit-box-orient: vertical;
+						margin-bottom: 20rpx;
+					}
+
+					.buttom {
+						display: flex;
+						justify-content: space-between;
+
+						.goods_price {
+							color: #eb4450;
+
+							text {
+								font-size: 40rpx;
+							}
+						}
+
+						.goods-num {
+							display: flex;
+
+							.dec,
+							.add {
+								text-align: center;
+							}
+
+							view {
+								text-align: center;
+								width: 70rpx;
+							}
+
+							.add {}
+						}
+					}
+				}
+			}
+
+			.cart-buttom {
+				display: flex;
+				align-items: center;
+				position: fixed;
+				bottom: 0;
+				left: 0;
+				width: 100vw;
+				height: 90rpx;
+
+				.choose {
+					flex: 1;
+					height: 90rpx;
+				}
+
+				.sum {
+					flex: 1;
+					height: 90rpx;
+				}
+
+				.pay {
+					flex: 1;
+					height: 90rpx;
+					text-align: center;
+					line-height: 90rpx;
+					background-color: #EB4450;
+				}
 			}
 		}
 	}
