@@ -20,7 +20,7 @@
 		name: "my-list",
 		props: {
 			lable: {
-				type: ['String', 'Number'],
+				type: String,
 			},
 			value: {
 				type: String,

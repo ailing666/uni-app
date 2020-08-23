@@ -43,8 +43,7 @@
 			<!-- 图文 -->
 			<view v-show="!activeIndex" v-html="goodsDetailsList.goods_introduce"></view>
 			<!-- 规格 -->
-			<view class="attrs-table" v-for="(item,idnex) in goodsDetailsList.attrs" :key="index">
-				<!-- <text>{{item.attr_name}}--{{item.attr_vals}}</text> -->
+			<view v-show="activeIndex" class="attrs-table" v-for="(item,idnex) in goodsDetailsList.attrs" :key="index">
 				<view class="my-tr">
 					<view class="my-td">{{item.attr_name}}</view>
 					<view class="my-td">{{item.attr_vals}}</view>
@@ -54,16 +53,18 @@
 		<!-- 底部 -->
 		<view class="buttom">
 			<view class="kefu">
-
+				<text class="iconfont icon-kefu"></text>
+				<text>联系客服</text>
 			</view>
 			<view class="shopcart">
-
+				<text class="iconfont icon-icon-test3"></text>
+				<text>购物车</text>
 			</view>
 			<view class="add-cart">
-
+				加入购物车
 			</view>
 			<view class="buy">
-
+				立即购买
 			</view>
 		</view>
 	</view>
@@ -78,8 +79,11 @@
 		},
 		data() {
 			return {
+				// tab栏列表
 				tabList: ['图文介绍', '规格参数'],
+				// 商品详情列表
 				goodsDetailsList: [],
+				// 点击的索引
 				activeIndex: 0
 			}
 		},
@@ -104,6 +108,7 @@
 <style lang="less">
 	.goods-details {
 		background-color: #f4f4f4;
+		padding-bottom: 100rpx;
 
 		.g-info {
 			background-color: #fff;
@@ -230,13 +235,41 @@
 		}
 
 		.buttom {
-			.kefu {}
+			display: flex;
+			align-items: center;
+			position: fixed;
+			bottom: 0;
+			left: 0;
+			height: 92rpx;
+			width: 100vw;
+			background-color: #fff;
+			z-index: 999;
+
+			.kefu,
+			.shopcart {
+				flex: 2;
+				display: flex;
+				flex-direction: column;
+				align-items: center;
+			}
 
 			.shopcart {}
 
-			.add-cart {}
+			.add-cart,
+			.buy {
+				flex: 3;
+				line-height: 92rpx;
+				text-align: center;
+				color: #fff;
+			}
 
-			.buy {}
+			.add-cart {
+				background-color: #ffae00;
+			}
+
+			.buy {
+				background-color: #ff2d4a;
+			}
 		}
 	}
 </style>
