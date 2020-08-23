@@ -1,15 +1,17 @@
 <template>
 	<view class="searchDetails">
-		<!-- 搜索框 -->
-		<mySearchBar :keyword="keyword" @confirm="confirm"></mySearchBar>
-		<!-- 过滤栏 -->
-		<view class="filter-menu">
-			<view class="fm-item" v-for="(item,index) in filterList" :key="index" :class="{active:currentIndex===index}">
-				<text @click="setIndex(index)">{{item}}</text>
-				<text class="arrow">
-					<text class="a-top" :class="{active:isSort==='dec'}"></text>
-					<text class="a-buttom" :class="{active:isSort==='rise'}"></text>
-				</text>
+		<view class="header-stikcy">
+			<!-- 搜索框 -->
+			<mySearchBar :keyword="keyword" @confirm="confirm"></mySearchBar>
+			<!-- 过滤栏 -->
+			<view class="filter-menu">
+				<view class="fm-item" v-for="(item,index) in filterList" :key="index" :class="{active:currentIndex===index}">
+					<text @click="setIndex(index)">{{item}}</text>
+					<text class="arrow">
+						<text class="a-top" :class="{active:isSort==='dec'}"></text>
+						<text class="a-buttom" :class="{active:isSort==='rise'}"></text>
+					</text>
+				</view>
 			</view>
 		</view>
 		<!-- 列表项 -->
@@ -53,9 +55,10 @@
 			}
 		},
 		methods: {
+			// 将子组件传来的输入框val赋值给keyword后调用接口
 			confirm(val) {
 				this.keyword = val
-				this.search
+				this.search()
 			},
 			// 设置索引
 			setIndex(index) {
@@ -114,7 +117,7 @@
 				this.goodsList = [...this.goodsList, ...res.goods]
 				// console.log('this.goodsList', ...this.goodsList);
 				// 判断最后一页
-				res.total <= this.goodsList.length &&	(this.isLastPage = true);
+				res.total <= this.goodsList.length && (this.isLastPage = true);
 			},
 			async getDetailsList() {
 				this.detailsList = await this.$request({
@@ -132,7 +135,7 @@
 		onPullDownRefresh() {
 			console.log('下拉');
 			this.search()
-			this.isLastPage=false
+			this.isLastPage = false
 		},
 		// 上拉
 		onReachBottom() {
@@ -141,9 +144,9 @@
 			if (!this.isLastPage) {
 				this.pageNum++;
 				this.getGoodsList();
-			}else{
+			} else {
 				uni.showToast({
-					title:'没有更多了'
+					title: '没有更多了'
 				})
 			}
 		},
@@ -151,50 +154,59 @@
 </script>
 <style lang="less">
 	.searchDetails {
-		.filter-menu {
-			display: flex;
-			justify-content: space-around;
-			height: 102rpx;
-			line-height: 102rpx;
+		.header-stikcy {
+			// 粘性定位
+			position: sticky;
+			width: 100%;
+			top: 0;
+			background-color: #fff;
 
-			.fm-item {
-				&.active {
-					color: #ff3350;
-				}
+			.filter-menu {
+				display: flex;
+				justify-content: space-around;
+				height: 102rpx;
+				line-height: 102rpx;
 
-				&:nth-child(3) {
-					.arrow {
-						position: relative;
+				.fm-item {
+					&.active {
+						color: #ff3350;
+					}
 
-						text {
-							position: absolute;
-							width: 0;
-							height: 0;
-							right: -26rpx;
-							border: 10rpx solid transparent;
-						}
+					&:nth-child(3) {
+						.arrow {
+							position: relative;
 
-						.a-top {
-							top: 24rpx;
-							border-top: 14rpx solid #cdcdcd;
-
-							&.active {
-								border-top-color: #666666;
+							text {
+								position: absolute;
+								width: 0;
+								height: 0;
+								right: -26rpx;
+								border: 10rpx solid transparent;
 							}
-						}
 
-						.a-buttom {
-							top: -6rpx;
-							border-bottom: 14rpx solid #cdcdcd;
+							.a-top {
+								top: 24rpx;
+								border-top: 14rpx solid #cdcdcd;
 
-							&.active {
-								border-bottom-color: #666666;
+								&.active {
+									border-top-color: #666666;
+								}
+							}
+
+							.a-buttom {
+								top: -6rpx;
+								border-bottom: 14rpx solid #cdcdcd;
+
+								&.active {
+									border-bottom-color: #666666;
+								}
 							}
 						}
 					}
 				}
 			}
 		}
+
 
 		.details-list {
 			display: flex;
