@@ -10,7 +10,7 @@
 				优购生活馆
 			</view>
 			<!-- 商品 -->
-			<view class="goods" v-for="item in cartGoodsList" :key="item.goods_ids">
+			<view class="goods" v-for="item in cartGoodsList" :key="item.goods_id">
 				<view class="left">
 					<radio @click="isChecked=!isChecked" :checked="isChecked" color="#eb4450" />
 					<image :src="item.goods_small_logo" mode=""></image>

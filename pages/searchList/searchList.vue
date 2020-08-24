@@ -152,7 +152,6 @@
 				})
 				// 请求结束后关闭请求状
 				this.isRequesting = false
-				// console.log('请求的初始', ...res.goods);
 				// 请求完成手动关闭下拉动画
 				uni.stopPullDownRefresh()
 				// 定义排序函数,根据价格升序
@@ -177,7 +176,6 @@
 			},
 			// 携带商品id跳转商品详情页
 			toGoodsDetails(id) {
-				console.log('???');
 				uni.navigateTo({
 					url: '../goodsDetails/goodsDetails?goodsId=' + id
 				});
