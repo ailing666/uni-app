@@ -21,9 +21,9 @@
 						<text class="goods_price">$<text>{{item.goods_price}}</text>.00</text>
 						<!-- 按钮 -->
 						<view class="goods-num">
-							<button @click="decNum(item)" class="dec" size="mini">-</button>
-							<input type="text" v-model="num" />
-							<button @click="addNum(item)" class="add" size="mini">+</button>
+							<button @click="decNum(item,index)" class="dec" size="mini">-</button>
+							<input type="text" v-model="item.num" />
+							<button @click="addNum(item,index)" class="add" size="mini">+</button>
 						</view>
 					</view>
 				</view>
@@ -47,6 +47,7 @@
 
 <script>
 	import myList from '../../components/myList.vue'
+
 	export default {
 		name: 'shop-cart',
 		components: {
@@ -54,37 +55,45 @@
 		},
 		data() {
 			return {
-				num: 1,
-				sum:0,
+				sum: 0,
 				cartGoodsList: [],
 				isChecked: false
 			}
 		},
+		computed: {
+
+		},
 		onLoad(options) {
 			this.getCartGoodsList(options.goods_ids)
-		},
-		watch:{
-			num(newVal,oldVal){
-			}
+			let _cartGoodsList = uni.getStorageSync('GOODSLIST')
+
 		},
 		methods: {
 			// 获取购物车要展示的
 			async getCartGoodsList(goods_ids) {
 				this.cartGoodsList = await this.$request({
-					url: '/api/public/v1/goods/goodslist?goods_ids=' + 140 +','+359
+					url: '/api/public/v1/goods/goodslist?goods_ids=' + 140 + ',' + 359
 				})
+				this.cartGoodsList.forEach(item=>{
+					item.num=1
+					item.checked=false
+				})
+				let cart = this.cartGoodsList.map(item => {
+					return {
+						goodsId: item.goods_id,
+						num: item.num,
+						checked: item.checked
+					}
+				})
+				uni.setStorageSync('GOODSLIST', cart);
 			},
 			// 减少
-			decNum(item) {
-				console.log(item);
-				item[num] = this.num
-				console.log(item[num]);
-				this.num && this.num--
+			decNum(item,index) {
+				item.num && this.$set(item, index, item.num--)
 			},
 			// 增加
-			addNum(item) {
-				console.log(item);
-				this.num <= 99 && this.num++
+			addNum(item,index) {
+				item.num <= 99 && this.$set(item, index, item.num++)
 			}
 		}
 	}
