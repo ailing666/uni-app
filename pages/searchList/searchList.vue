@@ -59,10 +59,8 @@
 				currentIndex: 0,
 				// 搜索关键词
 				keyword: '',
-				pageNum: 1,
 				// 排序
 				isSort: undefined,
-				old: 'rise',
 				// 过滤栏
 				filterList: ['综合', '销量', '价格'],
 				// 返回商品列表
@@ -73,8 +71,6 @@
 				type: '',
 				// 历史记录数组,如果本地储存中没有就是空数组
 				keyWordsList: uni.getStorageSync('KEYWORDSLIST') || [],
-				// 是否在请求中
-				isRequesting:false
 			}
 		},
 		methods: {
@@ -139,7 +135,7 @@
 			},
 			async getGoodsList() {
 				// 请求前如果是再请求中就不再请求
-				if(this.isRequesting) return;
+				if (this.isRequesting) return;
 				// 请求开始开启请求状态
 				this.isRequesting = true
 				let res = await this.$request({
@@ -182,15 +178,19 @@
 			}
 		},
 		onLoad(options) {
+			// 将结构中不使用的变量通过this直接添加在Vue实力的属性,避免vue中监听该属性浪费性能
+			this.pageNum= 1
+			this.old= 'rise'
+			// 是否在请求中
+			this.isRequesting= false
 			// 获取关键词
-			this.keyword = options.cat_name,
+			this.keyword = options.cat_name
 			// 获取从哪里来的
-				this.type = options.type
+			this.type = options.type
 			this.getGoodsList()
 		},
 		// 下拉
 		onPullDownRefresh() {
-			console.log('下拉');
 			this.search()
 			this.isLastPage = false
 		},

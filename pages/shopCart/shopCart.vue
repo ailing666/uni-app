@@ -77,6 +77,8 @@
 			// 减少
 			decNum(item) {
 				console.log(item);
+				item[num] = this.num
+				console.log(item[num]);
 				this.num && this.num--
 			},
 			// 增加
