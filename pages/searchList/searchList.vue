@@ -72,7 +72,9 @@
 				// 从哪里来
 				type: '',
 				// 历史记录数组,如果本地储存中没有就是空数组
-				keyWordsList: uni.getStorageSync('KEYWORDSLIST') || []
+				keyWordsList: uni.getStorageSync('KEYWORDSLIST') || [],
+				// 是否在请求中
+				isRequesting:false
 			}
 		},
 		methods: {
@@ -136,6 +138,10 @@
 				this.getGoodsList()
 			},
 			async getGoodsList() {
+				// 请求前如果是再请求中就不再请求
+				if(this.isRequesting) return;
+				// 请求开始开启请求状态
+				this.isRequesting = true
 				let res = await this.$request({
 					url: '/api/public/v1/goods/search',
 					data: {
@@ -144,6 +150,8 @@
 						pagesize: PAGE_SIZE
 					},
 				})
+				// 请求结束后关闭请求状
+				this.isRequesting = false
 				// console.log('请求的初始', ...res.goods);
 				// 请求完成手动关闭下拉动画
 				uni.stopPullDownRefresh()
@@ -178,6 +186,7 @@
 		onLoad(options) {
 			// 获取关键词
 			this.keyword = options.cat_name,
+			// 获取从哪里来的
 				this.type = options.type
 			this.getGoodsList()
 		},

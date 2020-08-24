@@ -21,9 +21,9 @@
 						<text class="goods_price">$<text>{{item.goods_price}}</text>.00</text>
 						<!-- 按钮 -->
 						<view class="goods-num">
-							<button class="dec" size="mini">-</button>
-							<view>{{num}}</view>
-							<button class="add" size="mini">+</button>
+							<button @click="decNum(item)" class="dec" size="mini">-</button>
+							<input type="text" v-model="num" />
+							<button @click="addNum(item)" class="add" size="mini">+</button>
 						</view>
 					</view>
 				</view>
@@ -35,7 +35,7 @@
 					全选
 				</view>
 				<view class="sum">
-					合计
+					合计:{{sum}}
 				</view>
 				<view class="pay">
 					结算
@@ -55,6 +55,7 @@
 		data() {
 			return {
 				num: 1,
+				sum:0,
 				cartGoodsList: [],
 				isChecked: false
 			}
@@ -62,11 +63,26 @@
 		onLoad(options) {
 			this.getCartGoodsList(options.goods_ids)
 		},
+		watch:{
+			num(newVal,oldVal){
+			}
+		},
 		methods: {
+			// 获取购物车要展示的
 			async getCartGoodsList(goods_ids) {
 				this.cartGoodsList = await this.$request({
-					url: '/api/public/v1/goods/goodslist?goods_ids=' + 140
+					url: '/api/public/v1/goods/goodslist?goods_ids=' + 140 +','+359
 				})
+			},
+			// 减少
+			decNum(item) {
+				console.log(item);
+				this.num && this.num--
+			},
+			// 增加
+			addNum(item) {
+				console.log(item);
+				this.num <= 99 && this.num++
 			}
 		}
 	}
@@ -140,7 +156,7 @@
 								text-align: center;
 							}
 
-							view {
+							input {
 								text-align: center;
 								width: 70rpx;
 							}
