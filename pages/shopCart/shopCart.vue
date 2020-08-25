@@ -61,7 +61,6 @@
 		},
 		onLoad(options) {
 			this.idStr = ''
-			this.num=1
 			this.getCartGoodsList()
 		},
 		onShow() {
@@ -84,19 +83,20 @@
 				// 拿到仓库的id
 				let idArr = cart.map(item => item.goodsId)
 				this.idStr = idArr.join()
-				let num = cart.map(item => item.num)
-				console.log('num',num);
 				// 根据id调用接口
-				this.cartGoodsList = await this.$request({
+				let _cartGoodsList = await this.$request({
 					url: '/api/public/v1/goods/goodslist?goods_ids=' + this.idStr
 				})
-				// // 遍历获取到的数据每个都添加这三个属性
-				this.cartGoodsList.forEach((item,index) => {
-					item.num=cart[index].num
-					item.checked=cart[index].checked
+			// 一步到位处理对象
+				this.cartGoodsList = _cartGoodsList.map(sItem=>{
+					// 早到cart中和_cartGoodsListid一样的并返回成一个新数组
+					let targetGoods = cart.find(goods=>{
+						return goods.goodsId===sItem.goods_id
+					})
+					// 合并为一个数组赋值给this.cartGoodsList
+					return {...targetGoods,...sItem}
 				})
-				console.log('遍历添加属性',this.cartGoodsList);
-				// 用来储存
+				
 				let goods = this.cartGoodsList.map(item => {
 					return {
 						goodsId: item.goods_id,
