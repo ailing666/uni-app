@@ -12,7 +12,7 @@
 			<!-- 商品 -->
 			<view class="goods" v-for="item in cartGoodsList" :key="item.goods_id">
 				<view class="left">
-					<radio @click="isChecked=!isChecked" :checked="isChecked" color="#eb4450" />
+					<radio @click="item.checked=!item.checked" :checked="item.checked" color="#eb4450" />
 					<image :src="item.goods_small_logo" mode=""></image>
 				</view>
 				<view class="right">
@@ -21,9 +21,9 @@
 						<text class="goods_price">$<text>{{item.goods_price}}</text>.00</text>
 						<!-- 按钮 -->
 						<view class="goods-num">
-							<button @click="decNum(item,index)" class="dec" size="mini">-</button>
+							<button @click="decNum(item)" class="dec" size="mini">-</button>
 							<input type="text" v-model="item.num" />
-							<button @click="addNum(item,index)" class="add" size="mini">+</button>
+							<button @click="addNum(item)" class="add" size="mini">+</button>
 						</view>
 					</view>
 				</view>
@@ -31,7 +31,7 @@
 			<!-- 底部 -->
 			<view class="cart-buttom">
 				<view class="choose">
-					<radio @click="isChecked=!isChecked" :checked="isChecked" color="#eb4450" />
+					<radio @click="item.checked=!item.checked" :checked="item.checked" color="#eb4450" />
 					全选
 				</view>
 				<view class="sum">
@@ -55,45 +55,66 @@
 		},
 		data() {
 			return {
-				sum: 0,
 				cartGoodsList: [],
 				isChecked: false
 			}
 		},
-		computed: {
-
-		},
 		onLoad(options) {
-			this.getCartGoodsList(options.goods_ids)
-			let _cartGoodsList = uni.getStorageSync('GOODSLIST')
-
+			this.idStr = ''
+			this.num=1
+			this.getCartGoodsList()
+		},
+		onShow() {
+			this.getCartGoodsList()
+		},
+		computed:{
+			sum(){
+				return this.cartGoodsList.reduce((sum, item) => {
+				  return sum + (item.checked ? item.num * item.goods_price : 0)
+				}, 0)
+			}
 		},
 		methods: {
 			// 获取购物车要展示的
-			async getCartGoodsList(goods_ids) {
+			async getCartGoodsList() {
+				// 获取厂库的购物车
+				let cart = this.$store.state.shopCart
+
+				console.log('vuecart',cart);
+				// 拿到仓库的id
+				let idArr = cart.map(item => item.goodsId)
+				this.idStr = idArr.join()
+				let num = cart.map(item => item.num)
+				console.log('num',num);
+				// 根据id调用接口
 				this.cartGoodsList = await this.$request({
-					url: '/api/public/v1/goods/goodslist?goods_ids=' + 140 + ',' + 359
+					url: '/api/public/v1/goods/goodslist?goods_ids=' + this.idStr
 				})
-				this.cartGoodsList.forEach(item=>{
-					item.num=1
-					item.checked=false
+				// // 遍历获取到的数据每个都添加这三个属性
+				this.cartGoodsList.forEach((item,index) => {
+					item.num=cart[index].num
+					item.checked=cart[index].checked
 				})
-				let cart = this.cartGoodsList.map(item => {
+				console.log('遍历添加属性',this.cartGoodsList);
+				// 用来储存
+				let goods = this.cartGoodsList.map(item => {
 					return {
 						goodsId: item.goods_id,
 						num: item.num,
 						checked: item.checked
 					}
 				})
-				uni.setStorageSync('GOODSLIST', cart);
+				console.log('用来储存',goods);
+				uni.setStorageSync('GOODSLIST', goods);
+				this.$store.commit('SAVEGOODSLIST', goods)
 			},
 			// 减少
-			decNum(item,index) {
-				item.num && this.$set(item, index, item.num--)
+			decNum(item) {
+				item.num && this.$set(item, 0, item.num--)
 			},
 			// 增加
-			addNum(item,index) {
-				item.num <= 99 && this.$set(item, index, item.num++)
+			addNum(item) {				
+				item.num <= 99 && this.$set(item, 0, item.num++)
 			}
 		}
 	}

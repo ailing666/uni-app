@@ -102,7 +102,8 @@
 			},
 			// 加入购物车
 			addCart(id) {
-				this.$store.commit('addCart',id)
+				console.log('id',id);
+			this.$store.commit('ADDVART', id)
 			},
 			// 去购物车
 			toCart() {
