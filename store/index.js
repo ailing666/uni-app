@@ -14,7 +14,7 @@ const store = new Vuex.Store({
 			let cart = state.shopCart
 			// 返回vuex中与传入id一样的商品
 			let goods = cart.find(item => {
-				return item.goodsId == id 
+				return item.goodsId == id
 			})
 			console.log('goods', goods);
 			// 判断有没有返回
@@ -22,11 +22,7 @@ const store = new Vuex.Store({
 				goods = cart.find(item => {
 					return item.goodsId == id && item.num++
 				})
-				// goods.num++
-				// goods.checked = true
-				// 非首次
-				console.log('非首次', goods);
-								wx.setStorageSync('GOODSLIST',state.shopCart)
+				wx.setStorageSync('GOODSLIST', state.shopCart)
 			} else {
 				// 首次
 				let newGoods = {
@@ -34,14 +30,10 @@ const store = new Vuex.Store({
 					num: 1,
 					checked: true
 				}
-				console.log('newGoods',newGoods);
-				let _shopCart = [newGoods,...cart]
-				console.log('_shopCart',_shopCart);
-				state.shopCart=[...new Set(_shopCart)]
-				wx.setStorageSync('GOODSLIST',state.shopCart)
-				// wx.removeStorageSync('GOODSLIST')
+				let _shopCart = [newGoods, ...cart]
+				state.shopCart = [...new Set(_shopCart)]
+				wx.setStorageSync('GOODSLIST', state.shopCart)
 			}
-			console.log('state.shopCart', state.shopCart);
 		},
 		SAVEGOODSLIST(state, list) {
 			state.shopCart = list

@@ -66,10 +66,10 @@
 		onShow() {
 			this.getCartGoodsList()
 		},
-		computed:{
-			sum(){
+		computed: {
+			sum() {
 				return this.cartGoodsList.reduce((sum, item) => {
-				  return sum + (item.checked ? item.num * item.goods_price : 0)
+					return sum + (item.checked ? item.num * item.goods_price : 0)
 				}, 0)
 			}
 		},
@@ -78,8 +78,6 @@
 			async getCartGoodsList() {
 				// 获取厂库的购物车
 				let cart = this.$store.state.shopCart
-
-				console.log('vuecart',cart);
 				// 拿到仓库的id
 				let idArr = cart.map(item => item.goodsId)
 				this.idStr = idArr.join()
@@ -87,16 +85,18 @@
 				let _cartGoodsList = await this.$request({
 					url: '/api/public/v1/goods/goodslist?goods_ids=' + this.idStr
 				})
-			// 一步到位处理对象
-				this.cartGoodsList = _cartGoodsList.map(sItem=>{
+				// 一步到位处理对象
+				this.cartGoodsList = _cartGoodsList.map(sItem => {
 					// 早到cart中和_cartGoodsListid一样的并返回成一个新数组
-					let targetGoods = cart.find(goods=>{
-						return goods.goodsId===sItem.goods_id
+					let targetGoods = cart.find(goods => {
+						return goods.goodsId === sItem.goods_id
 					})
 					// 合并为一个数组赋值给this.cartGoodsList
-					return {...targetGoods,...sItem}
+					return { ...targetGoods,
+						...sItem
+					}
 				})
-				
+
 				let goods = this.cartGoodsList.map(item => {
 					return {
 						goodsId: item.goods_id,
@@ -104,7 +104,6 @@
 						checked: item.checked
 					}
 				})
-				console.log('用来储存',goods);
 				uni.setStorageSync('GOODSLIST', goods);
 				this.$store.commit('SAVEGOODSLIST', goods)
 			},
@@ -113,7 +112,7 @@
 				item.num && this.$set(item, 0, item.num--)
 			},
 			// 增加
-			addNum(item) {				
+			addNum(item) {
 				item.num <= 99 && this.$set(item, 0, item.num++)
 			}
 		}
