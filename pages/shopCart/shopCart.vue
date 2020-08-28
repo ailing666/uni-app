@@ -131,27 +131,27 @@
 				this.$store.commit('SAVEGOODSLIST', goods)
 			},
 			// 减少
-			// subNum(item, index) {
-			// 	// 只有一件时，减数量提示是否删除
-			// 	if (item.num === 1) {
-			// 		uni.showModal({
-			// 			title: '提示',
-			// 			content: '是否删除',
-			// 			success:res=>{
-			// 				if (res.confirm) {
-			// 					// 删除指定项
-			// 					this.cartGoodsList.splice(index, 1);
-			// 				}
-			// 			}
-			// 		});
-			// 		return
-			// 	}
-			// 	item.num--
-			// },
-			// // 增加
-			// addNum(item) {
-			// 	item.num <= 99 && item.num++
-			// }
+			subNum(item, index) {
+				// 只有一件时，减数量提示是否删除
+				if (item.num === 1) {
+					uni.showModal({
+						title: '提示',
+						content: '是否删除',
+						success:res=>{
+							if (res.confirm) {
+								// 删除指定项
+								this.cartGoodsList.splice(index, 1);
+							}
+						}
+					});
+					return
+				}
+				item.num--
+			},
+			// 增加
+			addNum(item) {
+				item.num <= 99 && item.num++
+			}
 		}
 	}
 </script>
