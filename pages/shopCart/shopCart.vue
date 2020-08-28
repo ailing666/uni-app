@@ -77,18 +77,18 @@
 					this.cartGoodsList.forEach(item => item.checked = status)
 				}
 			},
-			// // 总数量
-			// totalNum() {
-			// 	return this.cartGoodsList.reduce((sum, item) => {
-			// 		return sum + (item.checked ? item.num : 0)
-			// 	}, 0)
-			// },
-			// // 总价格
-			// totalPrice() {
-			// 	return this.cartGoodsList.reduce((sum, item) => {
-			// 		return sum + (item.checked ? item.num * item.goods_price : 0)
-			// 	}, 0)
-			// }
+			// 总数量
+			totalNum() {
+				return this.cartGoodsList.reduce((sum, item) => {
+					return sum + (item.checked ? item.num : 0)
+				}, 0)
+			},
+			// 总价格
+			totalPrice() {
+				return this.cartGoodsList.reduce((sum, item) => {
+					return sum + (item.checked ? item.num * item.goods_price : 0)
+				}, 0)
+			}
 		},
 		methods: {
 			toogleChecked(item) {
