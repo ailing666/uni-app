@@ -16,13 +16,11 @@ const store = new Vuex.Store({
 			let goods = cart.find(item => {
 				return item.goodsId == id
 			})
-			console.log('goods', goods);
 			// 判断有没有返回
 			if (goods) {
 				goods = cart.find(item => {
 					return item.goodsId == id && item.num++
 				})
-				wx.setStorageSync('GOODSLIST', state.shopCart)
 			} else {
 				// 首次
 				let newGoods = {

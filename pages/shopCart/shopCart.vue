@@ -12,7 +12,7 @@
 			<!-- 商品 -->
 			<view class="goods" v-for="item in cartGoodsList" :key="item.goods_id">
 				<view class="left">
-					<radio @click="item.checked=!item.checked" :checked="item.checked" color="#eb4450" />
+					<radio @click="toogleChecked(item)" :checked="item.checked" color="#eb4450" />
 					<image :src="item.goods_small_logo" mode=""></image>
 				</view>
 				<view class="right">
@@ -21,7 +21,7 @@
 						<text class="goods_price">$<text>{{item.goods_price}}</text>.00</text>
 						<!-- 按钮 -->
 						<view class="goods-num">
-							<button @click="decNum(item)" class="dec" size="mini">-</button>
+							<button @click="subNum(item,index)" class="sub" size="mini">-</button>
 							<input type="text" v-model="item.num" />
 							<button @click="addNum(item)" class="add" size="mini">+</button>
 						</view>
@@ -30,15 +30,15 @@
 			</view>
 			<!-- 底部 -->
 			<view class="cart-buttom">
-				<view class="choose">
-					<radio @click="item.checked=!item.checked" :checked="item.checked" color="#eb4450" />
+				<view class="choose" @click="toggleAll()">
+					<radio :checked="isAll" color="#eb4450" />
 					全选
 				</view>
 				<view class="sum">
-					合计:{{sum}}
+					合计:{{totalPrice}}
 				</view>
 				<view class="pay">
-					结算
+					结算({{totalNum}})
 				</view>
 			</view>
 		</view>
@@ -61,19 +61,42 @@
 		},
 		onLoad(options) {
 			this.idStr = ''
-			this.getCartGoodsList()
 		},
 		onShow() {
 			this.getCartGoodsList()
 		},
 		computed: {
-			sum() {
-				return this.cartGoodsList.reduce((sum, item) => {
-					return sum + (item.checked ? item.num * item.goods_price : 0)
-				}, 0)
-			}
+			// 全选
+			isAll: {
+				get() {
+					// 只有每个都选中才返回true，否则是false
+					return this.cartGoodsList.every(item => item.checked)
+				},
+				// 设置isAll选中后的状态从而影响上面的radio
+				set(status) {
+					this.cartGoodsList.forEach(item => item.checked = status)
+				}
+			},
+			// // 总数量
+			// totalNum() {
+			// 	return this.cartGoodsList.reduce((sum, item) => {
+			// 		return sum + (item.checked ? item.num : 0)
+			// 	}, 0)
+			// },
+			// // 总价格
+			// totalPrice() {
+			// 	return this.cartGoodsList.reduce((sum, item) => {
+			// 		return sum + (item.checked ? item.num * item.goods_price : 0)
+			// 	}, 0)
+			// }
 		},
 		methods: {
+			toogleChecked(item) {
+				item.checked = !item.checked
+			},
+			toggleAll() {
+				this.isAll = !this.isAll
+			},
 			// 获取购物车要展示的
 			async getCartGoodsList() {
 				// 获取厂库的购物车
@@ -108,13 +131,27 @@
 				this.$store.commit('SAVEGOODSLIST', goods)
 			},
 			// 减少
-			decNum(item) {
-				item.num && this.$set(item, 0, item.num--)
-			},
-			// 增加
-			addNum(item) {
-				item.num <= 99 && this.$set(item, 0, item.num++)
-			}
+			// subNum(item, index) {
+			// 	// 只有一件时，减数量提示是否删除
+			// 	if (item.num === 1) {
+			// 		uni.showModal({
+			// 			title: '提示',
+			// 			content: '是否删除',
+			// 			success:res=>{
+			// 				if (res.confirm) {
+			// 					// 删除指定项
+			// 					this.cartGoodsList.splice(index, 1);
+			// 				}
+			// 			}
+			// 		});
+			// 		return
+			// 	}
+			// 	item.num--
+			// },
+			// // 增加
+			// addNum(item) {
+			// 	item.num <= 99 && item.num++
+			// }
 		}
 	}
 </script>
@@ -182,7 +219,7 @@
 						.goods-num {
 							display: flex;
 
-							.dec,
+							.sub,
 							.add {
 								text-align: center;
 							}
